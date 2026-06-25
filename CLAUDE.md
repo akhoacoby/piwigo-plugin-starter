@@ -1,6 +1,6 @@
 # CLAUDE.md — Piwigo plugin starter
 
-Starter scaffold for a Piwigo plugin. Ships as `example_plugin`; **rename it first** (see `guidelines/01-architecture.md`).
+Starter scaffold for a Piwigo plugin. The pristine skeleton lives in **`template/`** (ships as `example_plugin`); **scaffold from it first** (copy + rename — see the `scaffold-plugin` skill and `guidelines/01-architecture.md`).
 
 Development guidelines live in **`guidelines/`** — read the relevant file before working on that area. Deep technical reference (the "why/how it works"): **`PIWIGO_CONVENTIONS.md`**.
 
@@ -24,8 +24,11 @@ Development guidelines live in **`guidelines/`** — read the relevant file befo
 Invocable workflows that automate the repetitive tasks — prefer them over doing the steps by hand.
 | Skill | Use it to |
 |---|---|
-| `scaffold-plugin` | **First step.** Rename the `example_plugin` starter into a real plugin (tokens + folder + guard). Ships `rename.sh`. |
+| `scaffold-plugin` | **First step.** Copy `template/` into a new plugin and rename every token. Ships `rename.sh`. |
 | `verify-plugin` | Lint sweep + reversible DB-backed smoke test before "done". Ships `lint.sh` + `smoke-test.sh`. |
+| `theme-compat` | **Read before any UI.** How to look native in modus + bootstrap_darkroom (and the admin theme). Reference: `THEMES.md`. |
+| `add-gallery-ui` | Scaffold theme-neutral public/gallery output (block `.tpl` + scoped CSS, theme detection). |
+| `add-admin-ui` | Scaffold an admin settings page native to the admin theme (fieldset form, pwg token, infos/errors). |
 | `add-config-setting` | Wire a new setting end-to-end (default → validated save → form field → en_UK/fr_FR labels). |
 | `add-hook` | Register an event handler correctly (right event, lazy-include, modifier-vs-notify semantics). |
 | `add-ws-method` | Add a `ws.php` API method (typed param spec + permission re-check in the callback). |

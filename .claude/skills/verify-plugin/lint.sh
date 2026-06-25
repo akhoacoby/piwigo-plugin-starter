@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 #
-# php -l sweep across the plugin. Exit non-zero if any file fails.
-# Usage: bash lint.sh   (locates the plugin root from its own path)
+# php -l sweep across a plugin. Exit non-zero if any file fails.
+# Usage: bash lint.sh [dir]
+#   dir defaults to the starter repo root (covers template/). Pass a produced
+#   plugin's folder to lint it instead.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+if [ -n "${1:-}" ]; then
+  ROOT="$(cd "$1" && pwd)"
+else
+  ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+fi
 
 if ! command -v php >/dev/null 2>&1; then
   echo "error: 'php' not on PATH. If Piwigo runs in Docker, lint inside the container instead." >&2

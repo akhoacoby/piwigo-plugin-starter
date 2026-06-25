@@ -1,24 +1,22 @@
 #!/usr/bin/env bash
 #
-# Rename the example_plugin starter into a real plugin.
-# Usage: bash rename.sh <plugin_id> ["Display Name"] ["Author"]
+# Scaffold a new Piwigo plugin from the starter's template/ skeleton.
+# Usage: bash rename.sh <plugin_id> [dest_parent_dir] ["Display Name"] ["Author"]
 #
-# Replaces tokens across the repo (EXAMPLE_PLUGIN, example_plugin, "Example plugin"),
-# then renames the plugin folder. Skips .git/ and .claude/ (so the skills keep
-# referring to example_plugin as documentation).
-#
-# The whole body is wrapped in main() and called at the very end so bash has read
-# the entire file into memory before we move the directory it lives in.
+# Copies <repo>/template -> <dest_parent_dir>/<plugin_id>, then replaces tokens
+# (EXAMPLE_PLUGIN, example_plugin, "Example plugin") in the copy. The skeleton in
+# template/ is never modified, so you can scaffold many plugins from it.
 
 set -euo pipefail
 
 main() {
   local NEW_ID="${1:-}"
-  local DISPLAY="${2:-}"
-  local AUTHOR="${3:-}"
+  local DEST_PARENT="${2:-}"
+  local DISPLAY="${3:-}"
+  local AUTHOR="${4:-}"
 
   if [ -z "$NEW_ID" ]; then
-    echo "usage: bash rename.sh <plugin_id> [\"Display Name\"] [\"Author\"]" >&2
+    echo "usage: bash rename.sh <plugin_id> [dest_parent_dir] [\"Display Name\"] [\"Author\"]" >&2
     exit 2
   fi
   if ! printf '%s' "$NEW_ID" | grep -Eq '^[a-z][a-z0-9_]*$'; then
@@ -26,80 +24,74 @@ main() {
     exit 2
   fi
 
-  # Plugin root = three levels up from this script (.claude/skills/scaffold-plugin/).
-  local SCRIPT_DIR ROOT
+  # Repo root = three levels up from this script (.claude/skills/scaffold-plugin/).
+  local SCRIPT_DIR REPO SRC
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-  ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+  REPO="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+  SRC="$REPO/template"
 
-  if [ ! -f "$ROOT/main.inc.php" ]; then
-    echo "error: could not locate plugin root (no main.inc.php at $ROOT)" >&2
+  if [ ! -f "$SRC/main.inc.php" ]; then
+    echo "error: skeleton not found at $SRC (expected template/main.inc.php)" >&2
     exit 1
+  fi
+
+  # Default destination parent = repo root -> <repo>/<plugin_id>.
+  [ -z "$DEST_PARENT" ] && DEST_PARENT="$REPO"
+  DEST_PARENT="$(cd "$DEST_PARENT" 2>/dev/null && pwd || true)"
+  if [ -z "$DEST_PARENT" ]; then
+    echo "error: dest_parent_dir does not exist" >&2
+    exit 2
+  fi
+  local DEST="$DEST_PARENT/$NEW_ID"
+  if [ -e "$DEST" ]; then
+    echo "error: $DEST already exists — refusing to overwrite." >&2
+    exit 2
   fi
 
   local UPPER_ID
   UPPER_ID="$(printf '%s' "$NEW_ID" | tr '[:lower:]' '[:upper:]')"
-
-  # Default display name: title-case the id (under_scores -> spaces).
   if [ -z "$DISPLAY" ]; then
     DISPLAY="$(printf '%s' "$NEW_ID" | tr '_' ' ' | awk '{ for(i=1;i<=NF;i++){ $i=toupper(substr($i,1,1)) substr($i,2) } print }')"
   fi
 
-  echo "Plugin root : $ROOT"
-  echo "New id      : $NEW_ID"
-  echo "Constant    : ${UPPER_ID}_*  (e.g. ${UPPER_ID}_PATH)"
-  echo "Display name: $DISPLAY"
+  echo "Skeleton    : $SRC"
+  echo "New plugin  : $DEST"
+  echo "Id          : $NEW_ID   Constant: ${UPPER_ID}_*   Display: $DISPLAY"
   [ -n "$AUTHOR" ] && echo "Author      : $AUTHOR"
   echo
 
+  # Copy skeleton (no .git inside template/, but exclude defensively).
+  cp -a "$SRC" "$DEST"
+  rm -rf "$DEST/.git" 2>/dev/null || true
+
   replace_in_files() {
     local from="$1" to="$2"
-    find "$ROOT" -type f \
+    find "$DEST" -type f \
       \( -name '*.php' -o -name '*.tpl' -o -name '*.md' -o -name '*.css' -o -name '*.js' -o -name '*.json' \) \
-      -not -path '*/.git/*' -not -path '*/.claude/*' -print0 \
-      | xargs -0 -r sed -i "s/${from}/${to}/g"
+      -print0 | xargs -0 -r sed -i "s/${from}/${to}/g"
   }
 
-  # Order is case-sensitive and independent, but do UPPER first for clarity.
   replace_in_files 'EXAMPLE_PLUGIN' "$UPPER_ID"
   replace_in_files 'example_plugin' "$NEW_ID"
-  # Header display name (sed-escape the replacement's & and /).
-  local DISPLAY_ESC AUTHOR_ESC
+  local DISPLAY_ESC
   DISPLAY_ESC="$(printf '%s' "$DISPLAY" | sed 's/[&/\\]/\\&/g')"
   replace_in_files 'Example plugin' "$DISPLAY_ESC"
   if [ -n "$AUTHOR" ]; then
+    local AUTHOR_ESC
     AUTHOR_ESC="$(printf '%s' "$AUTHOR" | sed 's/[&/\\]/\\&/g')"
-    # Replace the starter's author lines.
-    find "$ROOT" -name 'main.inc.php' -not -path '*/.git/*' -not -path '*/.claude/*' -print0 \
-      | xargs -0 -r sed -i "s/^Author: .*/Author: ${AUTHOR_ESC}/"
+    find "$DEST" -name 'main.inc.php' -print0 | xargs -0 -r sed -i "s/^Author: .*/Author: ${AUTHOR_ESC}/"
   fi
 
-  echo "Token replacement done."
-
-  # Rename the folder so the guard (basename == id) passes.
-  local PARENT NEWPATH
-  PARENT="$(dirname "$ROOT")"
-  NEWPATH="$PARENT/$NEW_ID"
-  if [ "$(basename "$ROOT")" = "example_plugin" ] && [ "$ROOT" != "$NEWPATH" ]; then
-    if [ -e "$NEWPATH" ]; then
-      echo "warning: $NEWPATH already exists — folder NOT renamed. Rename manually." >&2
-    else
-      mv "$ROOT" "$NEWPATH"
-      echo "Folder renamed: $ROOT -> $NEWPATH"
-      ROOT="$NEWPATH"
-    fi
-  else
-    echo "Folder basename is not 'example_plugin' — leaving folder name as-is."
-  fi
-
+  echo "Created $DEST"
   echo
   echo "Leftover 'example_plugin' references (should be empty):"
-  if grep -rni example_plugin "$ROOT" --exclude-dir=.git --exclude-dir=.claude 2>/dev/null; then
+  if grep -rni example_plugin "$DEST" 2>/dev/null; then
     echo ">> Some references remain — fix them by hand." >&2
   else
     echo "  (none)"
   fi
   echo
-  echo "Next: set Version/Plugin URI/Author URI in main.inc.php, then run the verify-plugin skill."
+  echo "Next: set Version/Plugin URI/Author URI in $DEST/main.inc.php, then run the verify-plugin skill."
 }
 
 main "$@"

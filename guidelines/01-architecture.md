@@ -1,9 +1,12 @@
 # Architecture & Structure
 
-## Layout (after rename)
+## Where the skeleton lives in the starter
+The starter keeps the pristine plugin skeleton under **`template/`** (the repo root holds the guidelines, `PIWIGO_CONVENTIONS.md`, and `.claude/`). You make a real plugin by **copying `template/` out and renaming it** — the `scaffold-plugin` skill does exactly that. So each skeleton path below is at `template/<path>` in the starter, and at the **plugin root** once copied.
+
+## Layout (a plugin = the renamed contents of the starter's `template/`)
 
 ```
-your_plugin/
+your_plugin/                       # = renamed copy of the starter's template/
 ├── main.inc.php        # header + folder guard + YOUR_PLUGIN_* constants + add_event_handler('init', …)
 ├── maintain.class.php  # your_plugin_maintain extends PluginMaintain
 ├── admin.php           # admin page: tabsheet → set_filename → assign_var_from_handle('ADMIN_CONTENT', …)
@@ -11,8 +14,9 @@ your_plugin/
 ├── include/functions.inc.php   # your_plugin_init() and other handlers
 ├── index.php           # dir-protection redirect — REQUIRED in every directory
 ├── language/{en_UK,fr_FR}/plugin.lang.php   # add when you add UI strings
-└── template/  js/       # add for public-facing UI
+└── template/  js/       # the plugin's OWN public-UI dir (add for gallery output; see add-gallery-ui)
 ```
+> Note the two senses of "template": the **starter's** `template/` is the skeleton store; a **plugin's** own `template/` subdir holds its public `.tpl`/CSS. In the starter that public dir would be `template/template/`.
 
 ## Rules
 - `main.inc.php` ONLY: define constants, register event handlers, declare `init()`. No business logic at top level.
@@ -21,14 +25,14 @@ your_plugin/
 - One `index.php` redirect per directory (directory-listing protection).
 - Don't add front controllers; reach the gallery through hooks and virtual sections (see `06-hooks.md`).
 
-## First step — rename the scaffold
-`main.inc.php` has a **folder-name guard**, so the plugin stays inert until you rename consistently. Replace across the repo:
-- folder `example_plugin/` and the guard `!= 'example_plugin'`
-- `EXAMPLE_PLUGIN_*` constants → `YOUR_PLUGIN_*`
+## First step — scaffold from `template/`
+Run the **`scaffold-plugin`** skill: it copies `template/` to a new plugin folder and renames every token. `main.inc.php` has a **folder-name guard**, so the plugin stays inert until the rename is consistent. The rename replaces:
+- folder name and the guard `!= 'example_plugin'`
+- `EXAMPLE_PLUGIN_*` constants → `<UPPER_ID>_*`
 - `example_plugin_*` functions and the `example_plugin_maintain` class (MUST be `{folder}_maintain`)
 - `$conf['example_plugin']` config key
 - `main.inc.php` header: `Plugin Name`, `Version`, `Author`, `Author URI`, `Description`, `Has Settings`
 
-Verify: `grep -rni example_plugin .` is clean (this guideline aside).
+Verify: `grep -rni example_plugin <plugin>` is clean.
 
 > Reference: `PIWIGO_CONVENTIONS.md` §1–2 (repo layout, bootstrap order, entry points).

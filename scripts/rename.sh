@@ -24,10 +24,10 @@ main() {
     exit 2
   fi
 
-  # Repo root = three levels up from this script (.claude/skills/scaffold-plugin/).
+  # Repo root = one level up from this script (scripts/).
   local SCRIPT_DIR REPO SRC
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-  REPO="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+  REPO="$(cd "$SCRIPT_DIR/.." && pwd)"
   SRC="$REPO/template"
 
   if [ ! -f "$SRC/main.inc.php" ]; then
@@ -91,7 +91,7 @@ main() {
     echo "  (none)"
   fi
   echo
-  echo "Next: set Version/Plugin URI/Author URI in $DEST/main.inc.php, then run the verify-plugin skill."
+  echo "Next: set Version/Plugin URI/Author URI in $DEST/main.inc.php, then verify (scripts/lint.sh — see workflows/verify-plugin.md)."
 }
 
 main "$@"

@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [ -n "${1:-}" ]; then
   ROOT="$(cd "$1" && pwd)"
 else
-  ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+  ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 fi
 
 if ! command -v php >/dev/null 2>&1; then

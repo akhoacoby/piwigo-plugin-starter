@@ -1,14 +1,20 @@
 # Theme reference — modus & bootstrap_darkroom
 
-Concrete details behind the `theme-compat` skill. Derived from reading the bundled themes
+Concrete details behind `theme-compat.md` (this folder). Derived from reading the bundled themes
 (`themes/modus`, `themes/bootstrap_darkroom`) and the admin themes (`admin/themes/*`).
 
 ---
 
+## 0. Principle — own your UI, integrate at the edges
+A plugin's UI/UX is **yours**: you design it, **ship its own CSS/JS**, and it should look/behave **consistently on any theme the client runs**. You are not mimicking themes. Be **self-contained** so it works everywhere by default; adapt only at **integration touchpoints** (toolbar buttons; where your block attaches). **Guarantee + test on the two most-used themes: `modus` and `bootstrap_darkroom`** — that's the client base.
+
+**Why "works in one theme but not both" happens:** the two themes are mutually incompatible CSS/JS systems (proof in §1/§3/§4). Couple to one and you break in the other. Both themes *do* fire your hooks and render the same plugin slots (§2/§4b) — so your code runs in both; only the surrounding DOM/CSS differs. Own your UI → it stops mattering. Triage steps: see `theme-compat.md`.
+
 ## 1. How gallery theming works in Piwigo
-- The active gallery theme id is `$user['theme']` (PHP) — e.g. `modus`, `bootstrap_darkroom`, `default`, `elegant`.
-- A theme either **overrides core `default` templates** (modus) or **ships its own full template set** (bootstrap_darkroom). Most plugin output lands inside whatever markup the theme renders.
-- Plugins almost never know which theme is active unless they check `$user['theme']`. Design to **inherit**, then branch only when necessary.
+- The active gallery theme id is `$user['theme']` (PHP) — e.g. `modus`, `bootstrap_darkroom`, `default`, `elegant`. Core builds the page template from it (`new Template(PHPWG_ROOT_PATH.'themes', $theme)`), so `$user['theme']` is the authoritative source to branch on — **not** `$conf['default_theme']` (which ignores a per-user theme choice).
+- A theme either **reuses core `default` templates** (modus has *no* `index.tpl`/`picture.tpl`) or **ships its own full template set** (bootstrap_darkroom — Bootstrap 4). So the same plugin output lands in **very different DOM**: `#imageToolBar`/`#thumbnails`/`.content` (modus=default) vs `.navbar-nav`/`.container`/`.card` (darkroom).
+- **modus loads no Bootstrap/FontAwesome; darkroom loads no fontello pwg-icons** and doesn't style plugin `.pwg-button`. Depend on neither — bundle what you need.
+- Design **self-contained** (your own scoped CSS/JS), and branch only at touchpoints.
 
 ## 2. The core (theme-neutral) idioms — work in default + modus
 These are styled by core/default and by modus; emit them and you get themed for free there.
@@ -30,6 +36,7 @@ These are styled by core/default and by modus; emit them and you get themed for 
 - Styles the core button idiom (`.pwg-button`, `.pwg-state-default`) and uses **fontello** icons (`.pwg-icon`, `css/iconfontello.css`).
 - Ships **`css/plugin_compatibility.css`** — proof that modus patches plugin markup per-plugin (e.g. User Collections `.thumbnailCategory`). If your plugin reuses `.thumbnailCategory`/`#thumbnails` it inherits modus styling.
 - Hooks you can rely on: `#thumbnails`, `.content`, `.titrePage`, `.pwg-button`, `.pwg-icon`, `#comments`.
+- **Rewrites the photo-page toolbar (gotcha).** `themes/modus/functions.inc.php → modus_smarty_prefilter()` wraps the picture-page action buttons in `.actionButtonsWrapper` and prepends an **ellipsis "…" toggle** (`<a id="imageActionsSwitch" class="pwg-button">`, expanded by `modus.async.js`) — i.e. it **collapses the toolbar buttons (yours included) behind a "more actions" menu**. default and darkroom leave the toolbar alone; only modus does this. → A plugin button placed via `add_picture_button()` is present but **not visible until the user opens the "…" menu** on modus. Never make such a button *load-bearing* for your feature (see §4b).
 
 ## 4. bootstrap_darkroom specifics
 - **Bootstrap 4** (bundles `node_modules/bootstrap` + many **bootswatch**/**material** skins under `css/<skin>/`) + **FontAwesome 5** + **bootstrap-material-design** (`.btn-raised`). **Dark by default** (`bootstrap-darkroom` skin).
@@ -53,6 +60,8 @@ These are styled by core/default and by modus; emit them and you get themed for 
 | **bootstrap_darkroom** | **inside `<ul class="navbar-nav">`** (`picture_nav.tpl`) | `<li class="nav-item"><a class="nav-link"><i class="fas …">` | an **`<li class="nav-item">` with `<a class="nav-link">`** |
 
 → A bare `.pwg-button` anchor dropped into darkroom's `navbar-nav` `<ul>` is not an `<li>`, so it breaks the flex row and floats/mis-positions. **Branch the markup by theme.** Index buttons (`$PLUGIN_INDEX_ACTIONS`) follow the same rule (default `#…Buttons`/toolbar vs darkroom `navbar-nav`).
+
+**Visibility caveat — modus hides photo-page buttons behind "…":** even with the right markup, on the *picture* page modus's prefilter (§3) folds these buttons into an ellipsis "more actions" menu, so yours isn't visible by default. Branching fixes *position*, not *visibility*. If a flow depends on the user clicking this button (e.g. "add this photo to a panel/tray"), it will feel broken on modus. **Design lesson (real builds):** a simple one-click button that *does the whole action* tolerates being tucked away; a multi-step flow that needs repeated clicks on a collapsed button does not. Put the primary entry point inside your own self-contained element, or keep the toolbar button to a single self-sufficient action.
 
 ```php
 function yourplugin_toolbar_button($url, $label, $title)
@@ -98,30 +107,11 @@ In the template, add a modifier class so CSS can adapt without depending on them
 - Test on a **modus dark skin** and on **darkroom** — those break naive light-only CSS fastest.
 
 ## 7. Admin settings page (admin theme — NOT the gallery theme)
-The plugin config page renders in `admin/themes/{default,clear,roma}`. Canonical markup (from core `configuration_*.tpl`):
-```smarty
-<form method="post" action="{$F_ACTION}" class="properties">
-  <fieldset>
-    <legend>{'Section'|@translate}</legend>
-    <ul>
-      <li>
-        <label class="font-checkbox">
-          <span class="icon-check"></span>
-          <input type="checkbox" name="opt" {if $cfg.opt}checked="checked"{/if}> {'Option'|@translate}
-        </label>
-      </li>
-      <li>
-        <label>{'Mode'|@translate}
-          <select name="mode">…</select>
-        </label>
-      </li>
-    </ul>
-  </fieldset>
-  <p class="formButtons"><input class="submit" type="submit" name="submit" value="{'Save Settings'|@translate}"></p>
-  {* pwg token hidden field — see add-admin-ui *}
-</form>
-```
-- Feedback: push to `$page['infos']` / `$page['errors']` in PHP; the admin theme renders them.
-- Icons are the **admin** icon font (`.icon-cog`, `.icon-check`), not FontAwesome/fontello.
-- Tabs: `admin/include/tabsheet.class.php`. CSR­F: pwg token (see `04-security.md`).
-- Don't pull Bootstrap/modus classes into admin templates — they aren't loaded there.
+The plugin config page renders in `admin/themes/{default,clear,roma}` — modus/darkroom never touch it. Follow the **modern core pattern** (extracted from `admin.php?page=configuration&section=search`): `form.properties` → `#configContent` → `fieldset` with a colored animated legend icon → `.font-checkbox` switches → a **fixed `.savebar-footer`** with a `.buttonLike` submit and inline `.badge.info-message` success.
+
+**Full markup + class catalogue + real CSS: `ADMIN_UI.md` (this folder); procedure in `workflows/add-admin-ui.md`.** Key points:
+- Reuse `id="configContent"` (free save-bar bottom offset + legend styling) and the admin-theme classes verbatim — **ship no admin CSS**.
+- Success → assign `$save_success` (inline savebar badge, must sit in `.savebar-footer-block`); errors → `$page['errors']`.
+- Icons are **fontello admin/gallery glyphs** (`icon-floppy`, `icon-ok`, `icon-cog`), not FontAwesome.
+- Tabs: `admin/include/tabsheet.class.php`. CSRF: pwg token (see `04-security.md`).
+- Never pull Bootstrap/modus classes into admin templates — they aren't loaded there.

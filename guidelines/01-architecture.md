@@ -1,7 +1,7 @@
 # Architecture & Structure
 
 ## Where the skeleton lives in the starter
-The starter keeps the pristine plugin skeleton under **`template/`** (the repo root holds the guidelines, `PIWIGO_CONVENTIONS.md`, and `.claude/`). You make a real plugin by **copying `template/` out and renaming it** — the `scaffold-plugin` skill does exactly that. So each skeleton path below is at `template/<path>` in the starter, and at the **plugin root** once copied.
+The starter keeps the pristine plugin skeleton under **`template/`** (the repo root holds `AGENTS.md`, the guidelines, `PIWIGO_CONVENTIONS.md`, plus `workflows/`, `reference/`, `scripts/`). You make a real plugin by **copying `template/` out and renaming it** — `workflows/scaffold-plugin.md` (`scripts/rename.sh`) does exactly that. So each skeleton path below is at `template/<path>` in the starter, and at the **plugin root** once copied.
 
 ## Layout (a plugin = the renamed contents of the starter's `template/`)
 
@@ -14,7 +14,7 @@ your_plugin/                       # = renamed copy of the starter's template/
 ├── include/functions.inc.php   # your_plugin_init() and other handlers
 ├── index.php           # dir-protection redirect — REQUIRED in every directory
 ├── language/{en_UK,fr_FR}/plugin.lang.php   # add when you add UI strings
-└── template/  js/       # the plugin's OWN public-UI dir (add for gallery output; see add-gallery-ui)
+└── template/  js/       # the plugin's OWN public-UI dir (add for gallery output; build it by hand — see theme-compat + 05-frontend.md)
 ```
 > Note the two senses of "template": the **starter's** `template/` is the skeleton store; a **plugin's** own `template/` subdir holds its public `.tpl`/CSS. In the starter that public dir would be `template/template/`.
 
@@ -26,7 +26,7 @@ your_plugin/                       # = renamed copy of the starter's template/
 - Don't add front controllers; reach the gallery through hooks and virtual sections (see `06-hooks.md`).
 
 ## First step — scaffold from `template/`
-Run the **`scaffold-plugin`** skill: it copies `template/` to a new plugin folder and renames every token. `main.inc.php` has a **folder-name guard**, so the plugin stays inert until the rename is consistent. The rename replaces:
+Follow **`workflows/scaffold-plugin.md`** (runs `scripts/rename.sh`): it copies `template/` to a new plugin folder and renames every token. `main.inc.php` has a **folder-name guard**, so the plugin stays inert until the rename is consistent. The rename replaces:
 - folder name and the guard `!= 'example_plugin'`
 - `EXAMPLE_PLUGIN_*` constants → `<UPPER_ID>_*`
 - `example_plugin_*` functions and the `example_plugin_maintain` class (MUST be `{folder}_maintain`)

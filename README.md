@@ -1,4 +1,4 @@
-# Piwigo plugin starter
+# Piwigo Guideline/Template for using GLLM in plugin developement 
 
 A scaffold + knowledge base for building **Piwigo 16.x plugins** with an AI coding assistant (or by hand). It ships a pristine plugin skeleton, area-by-area guidelines, step-by-step workflows, deep theme/admin references, and runnable helper scripts — all tool-neutral, with thin adapters so any assistant (Claude Code, Cursor, Copilot, Windsurf, Aider, …) can use it.
 

@@ -5,6 +5,6 @@ description: Add a Piwigo web-service (API) method — register it on the ws_add
 
 # Add a web-service method
 
-Claude Code wrapper. The canonical, tool-neutral instructions live in **`workflows/add-ws-method.md`** — read and follow that.
+The canonical, tool-neutral instructions live in **`workflows/add-ws-method.md`** — read and follow that.
 
 > Canonical: `workflows/add-ws-method.md`. Index of everything: `AGENTS.md`.

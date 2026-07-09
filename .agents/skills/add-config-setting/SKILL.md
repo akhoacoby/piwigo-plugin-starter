@@ -5,6 +5,6 @@ description: Add a new configuration setting to a Piwigo plugin end-to-end — d
 
 # Add a config setting
 
-Claude Code wrapper. The canonical, tool-neutral instructions live in **`workflows/add-config-setting.md`** — read and follow that.
+The canonical, tool-neutral instructions live in **`workflows/add-config-setting.md`** — read and follow that.
 
 > Canonical: `workflows/add-config-setting.md`. Index of everything: `AGENTS.md`.

@@ -3,7 +3,7 @@
 Canonical, **tool-neutral** instructions for any AI coding assistant (Claude Code, Cursor, GitHub Copilot, Windsurf, Aider, Gemini CLI, Codex, …) building a Piwigo plugin from this starter. Everything here is plain Markdown + Bash — no model- or vendor-specific features required.
 
 > **This file is the source of truth.** Each tool's own rules file is a thin pointer back here:
-> `CLAUDE.md` (Claude Code), `.cursor/rules/piwigo-plugin.mdc` (Cursor), `.github/copilot-instructions.md` (Copilot), `.windsurfrules` (Windsurf), `CONVENTIONS.md` (Aider). Using a tool not listed? Point it at this file, or just read it.
+> `CLAUDE.md` (Claude Code), `.cursor/rules/piwigo-plugin.mdc` (Cursor), `.github/copilot-instructions.md` (Copilot), `.windsurfrules` (Windsurf), `CONVENTIONS.md` (Aider), `GEMINI.md` (Gemini CLI). **OpenAI Codex reads this `AGENTS.md` directly — no shim needed.** Using a tool not listed? Point it at this file, or just read it.
 
 ## What this starter is
 A scaffold for a Piwigo 16.x plugin. The pristine skeleton lives in **`template/`** (ships as `example_plugin`). **Scaffold from it first** — copy + rename — then build the feature. See `workflows/scaffold-plugin.md` and `guidelines/01-architecture.md`.
@@ -18,7 +18,7 @@ A scaffold for a Piwigo 16.x plugin. The pristine skeleton lives in **`template/
 | `template/` | The plugin skeleton (`example_plugin`) — copied by scaffolding, never edited in place. |
 | `PIWIGO_CONVENTIONS.md` | The "why/how it works" technical deep-dive. |
 
-> **Claude Code note:** the same procedures are also exposed under `.claude/skills/` as auto-invocable *skills*. Those `SKILL.md` files are thin wrappers that point at `workflows/` and `reference/` — the content here is canonical; they never duplicate it.
+> **Agent Skills note:** the same procedures are also exposed under `.agents/skills/` (the cross-tool [Agent Skills](https://agentskills.io) convention, auto-discovered by Codex, Cursor, OpenCode and others). Those `SKILL.md` files are thin wrappers that point at `workflows/` and `reference/` — the content here is canonical; they never duplicate it. If your tool does not scan `.agents/skills/`, read the matching `SKILL.md` yourself when a task fits its description.
 
 ## Guidelines index
 | File | Aspect |

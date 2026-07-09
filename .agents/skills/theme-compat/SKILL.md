@@ -5,6 +5,6 @@ description: How to make a Piwigo plugin's gallery UI work for the client on ANY
 
 # Theme compatibility
 
-Claude Code wrapper. The canonical, tool-neutral knowledge lives in **`reference/theme-compat.md`** — read it before any UI. Concrete per-theme class/DOM tables: **`reference/THEMES.md`**.
+ The canonical, tool-neutral knowledge lives in **`reference/theme-compat.md`** — read it before any UI. Concrete per-theme class/DOM tables: **`reference/THEMES.md`**.
 
 > Canonical: `reference/theme-compat.md`. Index of everything: `AGENTS.md`.

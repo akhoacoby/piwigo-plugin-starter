@@ -1,4 +1,4 @@
-# Piwigo Guideline/Template for using LLM in plugin developement 
+# Piwigo Guideline/Template for using LLM in plugin development 
 
 A scaffold + knowledge base for building **Piwigo 16.x plugins** with an AI coding assistant (or by hand). It ships a pristine plugin skeleton, area-by-area guidelines, step-by-step workflows, deep theme/admin references, and runnable helper scripts — all tool-neutral, with thin adapters so any assistant (Claude Code, Cursor, Copilot, Windsurf, Aider, …) can use it.
 
@@ -43,11 +43,13 @@ piwigo-plugin-starter/
 │
 └── tool adapters          ← thin pointers to AGENTS.md, one per assistant
     ├── CLAUDE.md                       (Claude Code)
-    ├── .claude/skills/<name>/SKILL.md  (Claude Code auto-invoked skills ×7)
+    ├── .agents/skills/<name>/SKILL.md  (cross-tool Agent Skills ×7)
     ├── .cursor/rules/piwigo-plugin.mdc (Cursor)
     ├── .github/copilot-instructions.md (GitHub Copilot)
     ├── .windsurfrules                  (Windsurf)
-    └── CONVENTIONS.md                  (Aider)
+    ├── CONVENTIONS.md                  (Aider)
+    └── GEMINI.md                       (Gemini CLI)
+        # OpenAI Codex reads AGENTS.md directly — no shim needed
 ```
 
 ## The three documentation layers
@@ -70,7 +72,7 @@ The Piwigo *knowledge* is plain Markdown/Bash — not specific to any AI vendor.
 - There's a single source of truth, so guidance can't drift between tools.
 - `AGENTS.md` is a cross-tool standard many assistants read natively; the adapters just cover the ones that don't.
 
-For **Claude Code** specifically, `.claude/skills/<name>/SKILL.md` are auto-invocable *skills* (scaffold, verify, add-admin-ui, add-config-setting, add-hook, add-ws-method, theme-compat). Each is a thin wrapper whose body points at the matching `workflows/`/`reference/` doc — same canonical content, just made auto-triggerable.
+The seven task *skills* (scaffold-plugin, verify-plugin, add-admin-ui, add-config-setting, add-hook, add-ws-method, theme-compat) live under `.agents/skills/<name>/SKILL.md` — the cross-tool [Agent Skills](https://agentskills.io) convention, auto-discovered by Codex, Cursor, OpenCode and others. Each is a thin wrapper whose body points at the matching `workflows/`/`reference/` doc — same canonical content, just made auto-triggerable. Tools that don't scan `.agents/skills/` yet (e.g. Claude Code) are instructed via their adapter file to read the matching `SKILL.md` when a task fits its description.
 
 ## The `template/` skeleton — scaffold first
 

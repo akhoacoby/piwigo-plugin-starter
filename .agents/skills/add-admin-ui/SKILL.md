@@ -5,6 +5,6 @@ description: Build or extend the plugin's admin settings page so it looks native
 
 # Add admin (settings) UI
 
-Claude Code wrapper. The canonical, tool-neutral instructions live in **`workflows/add-admin-ui.md`** — read and follow that. Supporting references: **`reference/ADMIN_UI.md`** (class + CSS catalogue) and **`reference/admin-configuration.tpl`** (ready-made template to copy).
+ The canonical, tool-neutral instructions live in **`workflows/add-admin-ui.md`** — read and follow that. Supporting references: **`reference/ADMIN_UI.md`** (class + CSS catalogue) and **`reference/admin-configuration.tpl`** (ready-made template to copy).
 
 > Canonical: `workflows/add-admin-ui.md`. Index of everything: `AGENTS.md`.

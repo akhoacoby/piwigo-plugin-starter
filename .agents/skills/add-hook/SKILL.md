@@ -5,6 +5,6 @@ description: Wire a Piwigo event handler correctly — pick the right event, reg
 
 # Add an event handler
 
-Claude Code wrapper. The canonical, tool-neutral instructions live in **`workflows/add-hook.md`** — read and follow that.
+ The canonical, tool-neutral instructions live in **`workflows/add-hook.md`** — read and follow that.
 
 > Canonical: `workflows/add-hook.md`. Index of everything: `AGENTS.md`.

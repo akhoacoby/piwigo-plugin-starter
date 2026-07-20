@@ -1,0 +1,57 @@
+# Skill registry — tracking metadata only.
+# No agent/tool consumes this file at runtime: triggers & descriptions live in each
+# SKILL.md frontmatter (the matching surface), content in the canonical doc it names.
+# Update `last_reviewed` when a skill's docs are re-verified against current Piwigo.
+# If a cross-tool manifest standard lands, seed it from this file.
+version: 1
+owner: akhoacoby
+
+skills:
+  - name: scaffold-plugin
+    canonical: workflows/scaffold-plugin.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: add-event-handler
+    canonical: workflows/add-event-handler.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: add-config-setting
+    canonical: workflows/add-config-setting.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: add-admin-ui
+    canonical: workflows/add-admin-ui.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: add-photo-tab
+    canonical: workflows/add-photo-tab.md
+    status: draft          # untested against a live install since authoring
+    last_reviewed: 2026-07-18
+  - name: add-batch-manager-ui
+    canonical: workflows/add-batch-manager-ui.md
+    status: draft          # untested against a live install since authoring
+    last_reviewed: 2026-07-18
+  - name: add-gallery-ui
+    canonical: workflows/add-gallery-ui.md
+    status: draft          # untested against a live install since authoring
+    last_reviewed: 2026-07-18
+  - name: add-ws-method
+    canonical: workflows/add-ws-method.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: theme-compat
+    canonical: reference/theme-compat.md
+    status: stable
+    last_reviewed: 2026-07-18
+  - name: verify-plugin
+    canonical: workflows/verify-plugin.md
+    status: stable
+    last_reviewed: 2026-07-18
+
+# Vendored third-party content referenced by skills (pin + provenance)
+vendored:
+  - path: skeleton/
+    source: https://github.com/Piwigo/Piwigo-Skeleton.git
+    pinned_commit: 3a3096b2037154092affc63b0033169662f8fb70
+    upstream_date: 2026-07-11
+    map: reference/SKELETON.md

@@ -4,6 +4,11 @@ The cleanest, most up-to-date admin settings UI in current Piwigo is
 `admin.php?page=configuration&section=search`
 (`admin/themes/default/template/configuration_search.tpl`). Match it.
 
+> **Provenance** (extracted from Piwigo 17.0.0beta1 core, verified 2026-07-20): savebar markup —
+> `configuration_search.tpl:227-239`; the PHP assigns feeding it (`PWG_TOKEN`, `F_ACTION`,
+> `isWebmaster`) — `admin/configuration.php:375-380,701`; savebar CSS — `admin/themes/default/theme.css:692-780`.
+> Line numbers drift between Piwigo versions; re-grep for the identifiers if they don't match.
+
 **All classes below are provided by the ADMIN theme** (`admin/themes/default/theme.css`
 + `css/components/general.css`), present in `default`/`clear`/`roma`. Your plugin
 template just **reuses them — ship no admin CSS.** (Gallery themes like modus/darkroom

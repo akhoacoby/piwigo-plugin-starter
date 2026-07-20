@@ -8,7 +8,7 @@ Concrete details behind `theme-compat.md` (this folder). Derived from reading th
 ## 0. Principle — own your UI, integrate at the edges
 A plugin's UI/UX is **yours**: you design it, **ship its own CSS/JS**, and it should look/behave **consistently on any theme the client runs**. You are not mimicking themes. Be **self-contained** so it works everywhere by default; adapt only at **integration touchpoints** (toolbar buttons; where your block attaches). **Guarantee + test on the two most-used themes: `modus` and `bootstrap_darkroom`** — that's the client base.
 
-**Why "works in one theme but not both" happens:** the two themes are mutually incompatible CSS/JS systems (proof in §1/§3/§4). Couple to one and you break in the other. Both themes *do* fire your hooks and render the same plugin slots (§2/§4b) — so your code runs in both; only the surrounding DOM/CSS differs. Own your UI → it stops mattering. Triage steps: see `theme-compat.md`.
+The two **themes** are mutually incompatible CSS/JS systems (proof in §1/§3/§4). Couple to one and you break in the other. Both themes *do* fire your hooks and render the same plugin slots (§2/§4b) — so your code runs in both; only the surrounding DOM/CSS differs. Own your UI → it stops mattering. Triage steps: see `theme-compat.md`.
 
 ## 1. How gallery theming works in Piwigo
 - The active gallery theme id is `$user['theme']` (PHP) — e.g. `modus`, `bootstrap_darkroom`, `default`, `elegant`. Core builds the page template from it (`new Template(PHPWG_ROOT_PATH.'themes', $theme)`), so `$user['theme']` is the authoritative source to branch on — **not** `$conf['default_theme']` (which ignores a per-user theme choice).

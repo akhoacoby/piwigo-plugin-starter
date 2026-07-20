@@ -1,7 +1,7 @@
 # Architecture & Structure
 
 ## Where the skeleton lives in the starter
-The starter keeps the pristine plugin skeleton under **`template/`** (the repo root holds `AGENTS.md`, the guidelines, `PIWIGO_CONVENTIONS.md`, plus `workflows/`, `reference/`, `scripts/`). You make a real plugin by **copying `template/` out and renaming it** — `workflows/scaffold-plugin.md` (`scripts/rename.sh`) does exactly that. So each skeleton path below is at `template/<path>` in the starter, and at the **plugin root** once copied.
+The starter keeps the pristine plugin skeleton under **`template/`** (the repo root holds `AGENTS.md`, the guidelines, `PIWIGO_CONVENTIONS.md`, plus `workflows/` and `reference/`). You make a real plugin by **copying `template/` out and renaming it** — follow `workflows/scaffold-plugin.md` and perform the steps yourself. So each skeleton path below is at `template/<path>` in the starter, and at the **plugin root** once copied.
 
 ## Layout (a plugin = the renamed contents of the starter's `template/`)
 
@@ -26,7 +26,7 @@ your_plugin/                       # = renamed copy of the starter's template/
 - Don't add front controllers; reach the gallery through hooks and virtual sections (see `06-hooks.md`).
 
 ## First step — scaffold from `template/`
-Follow **`workflows/scaffold-plugin.md`** (runs `scripts/rename.sh`): it copies `template/` to a new plugin folder and renames every token. `main.inc.php` has a **folder-name guard**, so the plugin stays inert until the rename is consistent. The rename replaces:
+Follow **`workflows/scaffold-plugin.md`** (you do the copy + token replacements directly): copy `template/` to a new plugin folder and rename every token. `main.inc.php` has a **folder-name guard**, so the plugin stays inert until the rename is consistent. The rename replaces:
 - folder name and the guard `!= 'example_plugin'`
 - `EXAMPLE_PLUGIN_*` constants → `<UPPER_ID>_*`
 - `example_plugin_*` functions and the `example_plugin_maintain` class (MUST be `{folder}_maintain`)

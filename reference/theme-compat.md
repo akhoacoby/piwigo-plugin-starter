@@ -9,7 +9,7 @@ Deep reference + concrete class tables: **`THEMES.md`** (this `reference/` folde
 
 This is the fix for the classic *"works in one theme but not both"* bug: that happens when the plugin is **coupled to one theme** instead of self-contained. Own your UI → it works in both.
 
-**…and keep it simple — simplicity is a compatibility feature.** Lesson from three real builds of the same plugin: the leanest version (one button → one action, a small self-contained stylesheet, no branching beyond the button) worked on *every* theme; the most elaborate version (a multi-step selection **tray** + per-theme branching + a large stylesheet) broke on **modus**. Every extra step and every extra reliance on theme chrome is one more thing a theme can break. Prefer **a single robust action over a multi-step flow**; the fewer toolbar buttons and theme touchpoints you depend on, the more portable you are. There is **no gallery scaffold** in this starter on purpose — build gallery UI by hand from these rules so it stays small.
+**…and keep it simple — simplicity is a compatibility feature.**: Prefer **a single robust action over a multi-step flow**; the fewer toolbar buttons and theme touchpoints you depend on, the more portable you are. There is **no gallery scaffold** in this starter on purpose — build gallery UI by hand from these rules so it stays small.
 
 ## Self-contained (99% of your UI) vs touchpoints (the only per-theme part)
 | | Self-contained — your block/page/dialog | Touchpoints — injected into theme chrome |

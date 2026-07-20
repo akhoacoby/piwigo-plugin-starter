@@ -11,26 +11,22 @@ The starter keeps the pristine skeleton in **`template/`** (named `example_plugi
 
 If only a name was given in prose, derive the id (lowercase, spaces→underscores) and confirm it back in one line — don't block on it.
 
-## Run it
-From the repo root, run the bundled script — it locates the starter's `template/` from its own path:
+## Do it
 
-```bash
-bash scripts/rename.sh <plugin_id> [dest_parent_dir] ["Display Name"] ["Author"]
-```
+1. **Copy** `template/` → `<dest>/<plugin_id>/`. Default dest = the starter repo root; for a live dev install use `<piwigo>/plugins/` so the plugin lands ready to activate. **Refuse to overwrite** an existing destination, and never edit `template/` itself.
+2. **Replace tokens** in every `*.php *.tpl *.md *.css *.js *.json` in the copy — in this order — `EXAMPLE_PLUGIN` → `<UPPER_ID>`, `example_plugin` → `<plugin_id>`, `Example plugin` → the display name.
+3. If an author was given, set the `Author:` line in the `main.inc.php` header.
 
-- **`dest_parent_dir`** (optional): where to create the plugin folder. Default = the starter repo root, producing `<repo>/<plugin_id>/`. For a live dev install, pass your `<piwigo>/plugins` path so the plugin lands ready to activate.
-- The script **copies `template/` → `<dest>/<plugin_id>/`** (skeleton untouched), then replaces `EXAMPLE_PLUGIN` → `<UPPER_ID>`, `example_plugin` → `<plugin_id>`, and `Example plugin` → display name across `*.php *.tpl *.md *.css *.js *.json` in the copy.
-
-## After running — verify (do not skip)
+## After scaffolding — verify (do not skip)
 1. `grep -rni example_plugin <dest>/<plugin_id>` → must be empty. Anything left is a missed token; fix by hand.
 2. Confirm the new folder is named exactly `<plugin_id>` — the guard compares against it.
-3. Set the header fields the script can't infer: `Version:`, `Plugin URI:`, `Author URI:`, and confirm `Has Settings:`.
+3. Set the header fields not covered by the token replacement: `Version:`, `Plugin URI:`, `Author URI:`, and confirm `Has Settings:`.
 4. `php -l` the new files (or run `workflows/verify-plugin.md` against the new folder).
 
 ## Notes
 - The skeleton in `template/` is never modified — re-run for each new plugin.
 - The `_maintain` class name MUST equal `{folder}_maintain` — the rename keeps them in lockstep.
 - Constants derive `ID` from `basename(dirname(__FILE__))`, so the folder name is the source of truth; the literal constant prefix just has to match.
-- Refuses to overwrite an existing `<dest>/<plugin_id>`.
+- Never overwrite an existing `<dest>/<plugin_id>` — stop and ask.
 
 > Reference: `guidelines/01-architecture.md`, `PIWIGO_CONVENTIONS.md` §1–2.

@@ -5,6 +5,6 @@ description: Rename the example_plugin starter into a real plugin — replaces e
 
 # Scaffold a new plugin
 
-The canonical, tool-neutral instructions live in **`workflows/scaffold-plugin.md`** — read and follow that. It runs `scripts/rename.sh` (copies `template/` → a new plugin folder and renames every token).
+The canonical, tool-neutral instructions live in **`workflows/scaffold-plugin.md`** — read and follow that. There is no scaffold script: **you copy `template/` → the new plugin folder and perform the token replacements yourself** with your file tools, then run the workflow's verification (leftover-token grep, folder-name check, `php -l`).
 
 > Canonical: `workflows/scaffold-plugin.md`. Index of everything: `AGENTS.md`.

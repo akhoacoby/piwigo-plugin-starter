@@ -1,9 +1,9 @@
 # AGENTS.md — Piwigo plugin starter
 
-Canonical, **tool-neutral** instructions for any AI coding assistant (Claude Code, Cursor, GitHub Copilot, Windsurf, Aider, Gemini CLI, Codex, …) building a Piwigo plugin from this starter. Everything here is plain Markdown + Bash — no model- or vendor-specific features required.
+Canonical, **tool-neutral** instructions for any AI coding assistant (Claude Code, Cursor, GitHub Copilot, Codex, Google Antigravity, GLM, Qwen Code, Gemini CLI, …) building a Piwigo plugin from this starter. Everything here is plain Markdown — no model- or vendor-specific features, and **no helper scripts: each workflow's steps are executed directly by you**.
 
 > **This file is the source of truth.** Each tool's own rules file is a thin pointer back here:
-> `CLAUDE.md` (Claude Code), `.cursor/rules/piwigo-plugin.mdc` (Cursor), `.github/copilot-instructions.md` (Copilot), `.windsurfrules` (Windsurf), `CONVENTIONS.md` (Aider), `GEMINI.md` (Gemini CLI). **OpenAI Codex reads this `AGENTS.md` directly — no shim needed.** Using a tool not listed? Point it at this file, or just read it.
+> `CLAUDE.md` (Claude Code), `.cursor/rules/piwigo-plugin.mdc` (Cursor), `.github/copilot-instructions.md` (Copilot), `GEMINI.md` (Gemini CLI), `QWEN.md` (Qwen Code). **Tools that read `AGENTS.md` natively (OpenAI Codex, Google Antigravity, OpenCode, …) need no shim, and GLM coding clients run through `CLAUDE.md`.** Using a tool not listed? Point it at this file, or just read it.
 
 ## What this starter is
 A scaffold for a Piwigo 16.x plugin. The pristine skeleton lives in **`template/`** (ships as `example_plugin`). **Scaffold from it first** — copy + rename — then build the feature. See `workflows/scaffold-plugin.md` and `guidelines/01-architecture.md`.
@@ -14,11 +14,11 @@ A scaffold for a Piwigo 16.x plugin. The pristine skeleton lives in **`template/
 | `guidelines/` | **Knowledge** — read the relevant file before working on that area (the *what/why*). |
 | `workflows/` | **Procedures** — step-by-step playbooks for common tasks (the *how*). |
 | `reference/` | **Deep references** — theme/admin class catalogues + a ready-made admin template asset. |
-| `scripts/` | **Runnable helpers** — `rename.sh`, `lint.sh`, `smoke-test.sh` (plain Bash; run from the repo root). |
 | `template/` | The plugin skeleton (`example_plugin`) — copied by scaffolding, never edited in place. |
+| `skeleton/` | Local copy of the **official Piwigo Skeleton demo plugin** — worked examples only, never copied wholesale. Map: `reference/SKELETON.md`. |
 | `PIWIGO_CONVENTIONS.md` | The "why/how it works" technical deep-dive. |
 
-> **Agent Skills note:** the same procedures are also exposed under `.agents/skills/` (the cross-tool [Agent Skills](https://agentskills.io) convention, auto-discovered by Codex, Cursor, OpenCode and others). Those `SKILL.md` files are thin wrappers that point at `workflows/` and `reference/` — the content here is canonical; they never duplicate it. If your tool does not scan `.agents/skills/`, read the matching `SKILL.md` yourself when a task fits its description.
+> **Agent Skills note:** `.agents/skills/` exposes these same procedures as cross-tool [Agent Skills](https://agentskills.io) — thin `SKILL.md` wrappers over `workflows/` + `reference/`, auto-discovered by some tools (Codex, Cursor, OpenCode). `.claude/skills` is a **symlink view** of the same folder for Claude Code's native discovery (add further symlinks only when a real tool scans a different path; on Windows checkouts without symlink support the shim/table fallback still works). No auto-scan? Read the matching `SKILL.md` yourself when a task fits its description. This file stays canonical; skills never duplicate it. Maintenance metadata (status, review dates, vendored pins) is tracked in `.agents/skills/registry.yaml` — humans only, no tool reads it.
 
 ## Guidelines index
 | File | Aspect |
@@ -37,17 +37,20 @@ A scaffold for a Piwigo 16.x plugin. The pristine skeleton lives in **`template/
 | `guidelines/12-commits.md` | Commit & PR conventions |
 
 ## Workflows index (procedures)
-Follow these instead of improvising. Each is a Markdown playbook; some run a script in `scripts/`.
+Follow these instead of improvising. Each is a Markdown playbook whose steps **you execute yourself** — there are no bundled scripts.
 | Workflow | Use it to |
 |---|---|
-| `workflows/scaffold-plugin.md` | **First step.** Copy `template/` into a new plugin and rename every token. Runs `scripts/rename.sh`. |
-| `workflows/verify-plugin.md` | Lint sweep + reversible DB-backed smoke test before "done". Runs `scripts/lint.sh` + `scripts/smoke-test.sh`. |
+| `workflows/scaffold-plugin.md` | **First step.** Copy `template/` into a new plugin and rename every token (you do the copy + replacements directly). |
+| `workflows/verify-plugin.md` | `php -l` sweep + reversible DB-backed smoke test before "done" (you run the commands directly). |
 | `workflows/add-admin-ui.md` | Build an admin settings page native to the admin theme (fieldset form, pwg token, infos/errors). Uses `reference/admin-configuration.tpl`. |
 | `workflows/add-config-setting.md` | Wire a new setting end-to-end (default → validated save → form field → en_UK/fr_FR labels). |
-| `workflows/add-hook.md` | Register an event handler correctly (right event, lazy-include, modifier-vs-notify semantics). |
+| `workflows/add-event-handler.md` | Register an event handler correctly (right event, lazy-include, modifier-vs-notify semantics) + the per-surface hook routing table. |
 | `workflows/add-ws-method.md` | Add a `ws.php` API method (typed param spec + permission re-check in the callback). |
+| `workflows/add-photo-tab.md` | Add a plugin tab to the **core Edit Photo** admin page (`tabsheet_before_select` + reproduced core tabsheet + per-photo save). |
+| `workflows/add-batch-manager-ui.md` | Extend the Batch Manager: selection prefilter, bulk action (global mode), per-photo field (unit mode) + both unit-save methods. |
+| `workflows/add-gallery-ui.md` | Wire public/gallery UI (buttons, virtual section page, menu block, prefilter, profile block) — wiring only; visuals ruled by `reference/theme-compat.md`. |
 
-> **No gallery scaffold on purpose.** Across three real builds, a copy-paste gallery scaffold made the gallery *worse*: it pushed each plugin toward more markup, theme-branching, and multi-step flows — exactly what breaks across themes (the leanest build worked everywhere; the most elaborate one broke on modus). Gallery UI is **guidance, not a generator**: read `reference/theme-compat.md`, keep it small and self-contained, and build it by hand. Scaffolding is reserved for the **admin** page, a single stable target.
+> **No gallery scaffold on purpose.** In three real builds, copy-paste gallery scaffolds bred extra markup, theme-branching, and multi-step flows — exactly what breaks across themes. Gallery UI is **guidance, not a generator**: `workflows/add-gallery-ui.md` (hook wiring) + `reference/theme-compat.md` (visual rules) + `skeleton/` (working examples). Only the **admin** page — a single stable target — gets scaffolding.
 
 ## Reference index (deep lookups)
 | File | What |
@@ -56,6 +59,7 @@ Follow these instead of improvising. Each is a Markdown playbook; some run a scr
 | `reference/THEMES.md` | Concrete class/DOM tables for `modus` & `bootstrap_darkroom`, the toolbar-button slot/position fix, and modus's photo-toolbar "…" collapse gotcha. |
 | `reference/ADMIN_UI.md` | The admin settings-page class catalogue + real CSS, extracted from the core Configuration→Search page. |
 | `reference/admin-configuration.tpl` | Ready-made admin settings template (savebar pattern) to copy + rename. |
+| `reference/SKELETON.md` | Map of the `skeleton/` demo plugin — which file demonstrates which surface/hook (photo tab, Batch Manager, gallery UI, menus, ws). |
 
 ## Golden rules
 - **Prefer native Piwigo APIs; never modify core** or other plugins — extend via hooks only.
@@ -70,7 +74,7 @@ Follow these instead of improvising. Each is a Markdown playbook; some run a scr
 ## Using this with any AI tool
 1. Open or scaffold a plugin (`workflows/scaffold-plugin.md`).
 2. Before touching an area, read the matching `guidelines/` file; before any UI, read `reference/theme-compat.md`.
-3. Use the `workflows/` playbook for the task; run the `scripts/` it names from the repo root.
+3. Use the `workflows/` playbook for the task and execute its steps yourself.
 4. Verify with `workflows/verify-plugin.md` before calling anything done.
 
-The scripts are ordinary Bash and assume nothing about which assistant invoked them — a human or any tool can run them directly.
+Every playbook step is plain file edits, shell one-liners, or SQL — any assistant or human can perform them directly; nothing depends on bundled tooling.

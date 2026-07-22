@@ -4,7 +4,7 @@ Piwigo Skills is a companion kit for anyone who wants to build a plugin for Piwi
 
 This short guide explains what the folder is, why it exists, and how to get going.
 
-> **Looking for the technical details?** The [main README](../README.md) is the developer-facing map of the repository — the full folder layout, how the pieces fit together, and the design decisions behind them.
+> **Looking for the technical details?** The [main README](docs/README_dev.md) is the developer-facing map of the repository — the full folder layout, how the pieces fit together, and the design decisions behind them.
 
 ## What this is
 
@@ -66,4 +66,4 @@ Happy building, and welcome to the Piwigo community.
 
 ---
 
-*Ready to go deeper? The [main README](../README.md) walks through the repository in full technical detail, and `AGENTS.md` is the file your AI assistant reads first.*
+*Ready to go deeper? The [main README](docs/README_dev.md) walks through the repository in full technical detail, and `AGENTS.md` is the file your AI assistant reads first.*

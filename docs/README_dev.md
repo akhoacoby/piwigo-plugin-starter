@@ -2,9 +2,9 @@
 
 A scaffold and knowledge base for building **Piwigo 16.x plugins**, whether you work with an AI assistant or entirely by hand. It gives you a clean plugin skeleton to start from, guidelines covering each area of a plugin, step-by-step workflows for common tasks, and deep references for themes and admin pages. Everything is plain Markdown and tool-neutral, with thin adapters so any assistant — Claude Code, Codex, Cursor, Copilot, Google Antigravity, GLM, Qwen Code, Gemini CLI — can pick it up and run with it.
 
-> **New here, or just want the friendly version?** Read [`docs/README.md`](docs/README.md) first. It explains what this project is, who it's for, and how to use it in plain language, with no code involved. This README is the developer-facing map of *how the repo is organised and why*.
+> **New here, or just want the friendly version?** Read [`README.md`](../README.md) first. It explains what this project is, who it's for, and how to use it in plain language, with no code involved. This README is the developer-facing map of *how the repo is organised and why*.
 >
-> **If you're an AI tool:** start at [`AGENTS.md`](AGENTS.md) — it's the canonical entrypoint and the single source of truth.
+> **If you're an AI tool:** start at [`AGENTS.md`](../AGENTS.md) — it's the canonical entrypoint and the single source of truth.
 
 ## Folder architecture
 
@@ -83,9 +83,9 @@ The ten task *skills* (scaffold-plugin, verify-plugin, add-admin-ui, add-photo-t
 
 `template/` is the pristine plugin skeleton, shipped as `example_plugin`. You never edit it in place. To start a real plugin you **copy it out and rename every token** (`EXAMPLE_PLUGIN` → `<UPPER_ID>`, `example_plugin` → `<plugin_id>`, `Example plugin` → your display name). Your AI assistant can perform the copy and the replacements directly.
 
-`main.inc.php` carries a folder-name guard that keeps the plugin inert until the rename is fully consistent, so a half-renamed copy can never half-load. The full procedure lives in [`workflows/scaffold-plugin.md`](workflows/scaffold-plugin.md).
+`main.inc.php` carries a folder-name guard that keeps the plugin inert until the rename is fully consistent, so a half-renamed copy can never half-load. The full procedure lives in [`workflows/scaffold-plugin.md`](../workflows/scaffold-plugin.md).
 
-`skeleton/` is different, and it's worth knowing the distinction. It's a local copy of the official Piwigo "Skeleton" demo plugin, kept purely as a **worked example**: when a workflow says "see the skeleton", you open it to see real, working wiring for that surface. You don't build on it, and where it disagrees with our own guidelines, the guidelines win — it's upstream demo code, not our style guide. [`reference/SKELETON.md`](reference/SKELETON.md) maps out where each surface is demonstrated.
+`skeleton/` is different, and it's worth knowing the distinction. It's a local copy of the official Piwigo "Skeleton" demo plugin, kept purely as a **worked example**: when a workflow says "see the skeleton", you open it to see real, working wiring for that surface. You don't build on it, and where it disagrees with our own guidelines, the guidelines win — it's upstream demo code, not our style guide. [`reference/SKELETON.md`](../reference/SKELETON.md) maps out where each surface is demonstrated.
 
 ## Quick start
 
@@ -106,4 +106,4 @@ The ten task *skills* (scaffold-plugin, verify-plugin, add-admin-ui, add-photo-t
 | Add gallery (front-end) UI | `reference/theme-compat.md` + `guidelines/05-frontend.md` (built by hand — no scaffold) |
 | Confirm it's done | `workflows/verify-plugin.md` → `guidelines/11-testing.md` |
 
-> The conventions and non-negotiables — security guards, escaping, DB access, theme rules, i18n — are summarised as **Golden rules** in [`AGENTS.md`](AGENTS.md) and explained in depth in [`PIWIGO_CONVENTIONS.md`](PIWIGO_CONVENTIONS.md).
+> The conventions and non-negotiables — security guards, escaping, DB access, theme rules, i18n — are summarised as **Golden rules** in [`AGENTS.md`](../AGENTS.md) and explained in depth in [`PIWIGO_CONVENTIONS.md`](../PIWIGO_CONVENTIONS.md).

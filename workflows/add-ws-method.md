@@ -22,6 +22,7 @@ function <plugin_id>_ws_add_methods($arr) {
 ```
 - Types: `WS_TYPE_ID|INT|FLOAT|BOOL|POSITIVE|NOTNULL`. Flags: `WS_PARAM_OPTIONAL|FORCE_ARRAY|ACCEPT_ARRAY`.
 - `post_only => true` for state changes; `admin_only => true` for admin operations.
+- **Admin-page saves live here, not in `admin.php`.** A plugin's admin settings save through an `admin_only+post_only` method called by AJAX (`workflows/add-admin-ui.md` "Save path", `workflows/add-config-setting.md`). `admin_only` is authorization only — such a method still declares a `pwg_token` param and its callback verifies it (`get_pwg_token() != $params['pwg_token']` → `PwgError(403)`).
 
 ## 2. Callback
 ```php

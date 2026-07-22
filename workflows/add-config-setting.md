@@ -8,19 +8,22 @@ Add the key to the private `$default_conf` array with a sane default. `install()
 conf_update_param('<id>', array_merge($this->default_conf, $current), true);
 ```
 
-## 2. Save handler — admin page (validate BEFORE storing)
-On the config-form POST: `check_pwg_token()` first, then **whitelist/validate every value** — never trust the raw input:
+## 2. Save handler — a ws method (validate BEFORE storing)
+Saves do **not** run in an `admin.php` `$_POST` handler — they go through an `admin_only+post_only` ws method called by AJAX (`workflows/add-ws-method.md`, `workflows/add-admin-ui.md` "Save path"). Inside the callback: verify the token, then **whitelist/validate every value** — never trust the raw input. The whitelist logic is the same as before; only the input source (`$params`) and the escaping differ:
 ```php
-$conf['<id>']['my_flag']  = isset($_POST['my_flag']);                       // bool
-$conf['<id>']['my_mode']  = in_array($_POST['my_mode'], array('a','b'))     // enum whitelist
-                              ? $_POST['my_mode'] : $this->default... ;
-$conf['<id>']['my_count'] = max(1, min(50, (int)$_POST['my_count']));       // clamp int
+if (get_pwg_token() != $params['pwg_token'])                              // CSRF (admin_only is authz only)
+  return new PwgError(403, l10n('Invalid security token'));
+$conf['<id>']['my_flag']  = (bool)$params['my_flag'];                     // bool
+$conf['<id>']['my_mode']  = in_array($params['my_mode'], array('a','b'), true)  // enum whitelist
+                              ? $params['my_mode'] : $this->default... ;
+$conf['<id>']['my_count'] = max(1, min(50, (int)$params['my_count']));    // clamp int
+$conf['<id>']['my_text']  = pwg_db_real_escape_string(trim($params['my_text'])); // string → escape for SQL
 conf_update_param('<id>', $conf['<id>'], true);
 ```
-Reject/clamp out-of-range values; do not store unvalidated strings.
+Reject/clamp out-of-range values; do not store unvalidated strings. **Escape string params yourself** — ws body params are NOT auto-`addslashes`-ed the way `$_POST` is (`workflows/add-ws-method.md`, `guidelines/03-database.md`).
 
 ## 3. Form field — config `.tpl`
-Add the input, pre-filled from the assigned config, inside the existing `{$ADMIN_CONTENT}` form (which already carries the pwg token). Escape any value rendered into HTML (`{$x|@escape}`) — Smarty auto-escaping is OFF.
+Add the input, pre-filled from the assigned config, with a stable `id` the save JS reads (`$('#my_flag').prop('checked')` etc. — see `workflows/add-admin-ui.md` step 4). No `<form>`/hidden token needed — the token is emitted as a JS const and sent in the AJAX body. Escape any value rendered into HTML (`{$x|@escape}`) — Smarty auto-escaping is OFF.
 
 ## 4. Labels — both languages
 Add the field label + help text key to **`language/en_UK/plugin.lang.php` AND `language/fr_FR/plugin.lang.php`**. Render via `{'…'|@translate}`.
